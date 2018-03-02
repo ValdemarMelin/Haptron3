@@ -5,21 +5,30 @@
 namespace Haptron {
 	// COMPONENTS
 
+	class GameStage {
+
+	public:
+		inline GameStage() { }
+		virtual ~GameStage() { }
+		virtual void tick(double dt) = 0;
+		virtual void build_scene() = 0;
+	};
+
 	enum GameState {
 		PLAY, QUIT
 	};
 
 	class GameInstance {
 		GameState state;
-		Level* level;
+		GameStage* stage;
 
-		void set_level(Level* level);
 	public:
 		float pos[3];
 		GameInstance();
 		~GameInstance();
 		inline GameState get_state() const { return state; }
-		inline Level* get_level() const { return level; }
+		inline GameStage* get_stage() const { return stage; }
+		void set_stage(GameStage* level);
 		void start();
 		void quit();
 		void tick();

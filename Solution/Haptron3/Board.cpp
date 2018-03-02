@@ -79,12 +79,24 @@ namespace Haptron {
 
 	BoardGraphics::BoardGraphics(Board* board) : board(board)
 	{
-		create_vao();
+
 	}
 
 	BoardGraphics::~BoardGraphics()
 	{
 
+	}
+
+	void BoardGraphics::init()
+	{
+		create_vao();
+	}
+
+	void BoardGraphics::dispose()
+	{
+		glDeleteBuffers(1, &vbo);
+		glDeleteBuffers(1, &ibo);
+		glDeleteVertexArrays(1, &vao);
 	}
 
 	void BoardGraphics::render()
@@ -126,49 +138,53 @@ namespace Haptron {
 
 		int v = glGetError();
 	}
+
 	Board::Board():tn(0), graphics(this)
 	{
 		for (int i = 0; i < 300; i++)
 			for (int j = 0; j < 300; j++)
 			{
-				//int r = rand() % 20;
-				//if(r < 3) tiles[tn][i][j] = true;
-				//else tiles[tn][i][j] = false;
-				tiles[tn][i][j] = true;
+				int r = rand() % 20;
+				if(r < 3) tiles[tn][i][j] = true;
+				else tiles[tn][i][j] = false;
 			}
-	}
-
-	void Board::tick(double dt)
-	{
-		/*
-		int tm = (tn + 1) % 2;
-		for (int i = 0; i < 300; i++)
-			for (int j = 0; j < 300; j++)
-			{
-				int r = 0;
-
-				if (tile_at(i - 1, j-1)) r++;
-				if (tile_at(i - 1, j)) r++;
-				if (tile_at(i - 1, j+1)) r++;
-
-				if (tile_at(i, j - 1)) r++;
-				if (tile_at(i, j + 1)) r++;
-
-				if (tile_at(i + 1, j - 1)) r++;
-				if (tile_at(i + 1, j)) r++;
-				if (tile_at(i + 1, j + 1)) r++;
-
-				if (!tile_at(i, j) && (r == 3) || tile_at(i, j) && (r == 2 || r == 3))
-					tiles[tm][i][j] = true;
-				else
-					tiles[tm][i][j] = false;
-			}
-		tn = tm;
-		*/
 	}
 
 	Board::~Board()
 	{
+		Graphics::render_unit.get_scene().remove(&this->graphics);
+	}
 
+	void Board::scene_init()
+	{
+		Graphics::render_unit.get_scene().add(&this->graphics);
+	}
+
+
+	void Board::tick(double dt)
+	{
+		int tm = (tn + 1) % 2;
+		for (int i = 0; i < 300; i++)
+		for (int j = 0; j < 300; j++)
+			{
+			int r = 0;
+
+			if (tile_at(i - 1, j-1)) r++;
+			if (tile_at(i - 1, j)) r++;
+			if (tile_at(i - 1, j+1)) r++;
+
+			if (tile_at(i, j - 1)) r++;
+			if (tile_at(i, j + 1)) r++;
+
+			if (tile_at(i + 1, j - 1)) r++;
+			if (tile_at(i + 1, j)) r++;
+			if (tile_at(i + 1, j + 1)) r++;
+
+			if (!tile_at(i, j) && (r == 3) || tile_at(i, j) && (r == 2 || r == 3))
+			tiles[tm][i][j] = true;
+			else
+			tiles[tm][i][j] = false;
+		}
+		tn = tm;
 	}
 }

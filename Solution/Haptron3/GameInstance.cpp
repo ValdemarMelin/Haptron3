@@ -18,32 +18,33 @@ namespace Haptron {
 
 	}
 
-	void GameInstance::set_level(Level* level)
+	void GameInstance::set_stage(GameStage* level)
 	{
-		delete this->level;
-		this->level = level;
-		Graphics::render_unit.set_level_graphics(level);
+		delete this->stage;
+		this->stage = level;
+		Graphics::render_unit.get_scene().clear();
+		level->build_scene();
 	}
 
 	void GameInstance::start()
 	{
 		this->state = GameState::PLAY;
-		set_level(Level::create_test_level());
+		set_stage(new Level());
 	}
 
 	void GameInstance::quit()
 	{
 		this->state = GameState::QUIT;
-		Graphics::render_unit.set_level_graphics(nullptr);
-		delete this->level;
-		this->level = nullptr;
+		delete this->stage;
+		this->stage = nullptr;
 	}
 
 	void GameInstance::tick()
 	{
 		double dt = 0.01;
-		level->tick(dt);
+		stage->tick(dt);
 	}
+
 	void GameInstance::key_down(int key)
 	{
 		switch (key)
@@ -61,6 +62,7 @@ namespace Haptron {
 			break;
 		}
 	}
+
 	void GameInstance::key_up(int key)
 	{
 

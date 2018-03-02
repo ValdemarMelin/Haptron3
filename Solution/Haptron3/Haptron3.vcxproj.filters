@@ -39,9 +39,6 @@
     <ClCompile Include="Graphics.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="BoardGraphics.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="LSDTile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -59,7 +56,13 @@
     <ClInclude Include="Texture.h">
       <Filter>GLUtils</Filter>
     </ClInclude>
-    <ClInclude Include="HaptronGraphics.h">
+    <ClInclude Include="Graphics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HaptronLevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

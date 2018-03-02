@@ -1,6 +1,8 @@
-#include "Haptron.h"
 
+
+#include "Tests.h"
 #include <map>
+
 using namespace std;
 
 static const char* vs_source = "\
@@ -29,94 +31,105 @@ void main() {\r\n\
 ";
 
 namespace Haptron {
-	namespace Graphics {
-		GraphicsResource<GLUtils::Shader, LSDTile::load_shader> LSDTile::shader;
+	Graphics::GraphicsResource<GLUtils::Shader, LSDTile::load_shader> LSDTile::shader;
 
-		GLUtils::Shader * LSDTile::load_shader()
-		{
-			map<GLuint, string> sm;
-			sm[GL_VERTEX_SHADER] = vs_source;
-			sm[GL_FRAGMENT_SHADER] = fs_source;
-			return new GLUtils::Shader(sm);
-		}
+	GLUtils::Shader * LSDTile::load_shader()
+	{
+		map<GLuint, string> sm;
+		sm[GL_VERTEX_SHADER] = vs_source;
+		sm[GL_FRAGMENT_SHADER] = fs_source;
+		return new GLUtils::Shader(sm);
+	}
 
-		void LSDTile::create_vao()
-		{
-			GLfloat coordinates[]{
-				0.0, 0.0, 0.0,
-				1.0, 0.0, 0.0,
-				0.0, 1.0, 0.0,
-				1.0, 1.0, 0.0
-			};
-			GLfloat tex_coords[]{ 0, 0, 1, 0, 0, 1, 1, 1 };
-			GLuint indexes[]{ 0, 2, 1, 2, 3, 1 };
-			glGenVertexArrays(1, &vao);
-			glBindVertexArray(vao);
+	void LSDTile::create_vao()
+	{
+		GLfloat coordinates[]{
+			0.0, 0.0, 0.0,
+			1.0, 0.0, 0.0,
+			0.0, 1.0, 0.0,
+			1.0, 1.0, 0.0
+		};
+		GLfloat tex_coords[]{ 0, 0, 1, 0, 0, 1, 1, 1 };
+		GLuint indexes[]{ 0, 2, 1, 2, 3, 1 };
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
 
-			// Generate and bind the vertex buffer object
-			glGenBuffers(1, &vbo);
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, 4 * 3 * sizeof(GLfloat), coordinates, GL_STATIC_DRAW);
-			// Bind to attribute 0
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		// Generate and bind the vertex buffer object
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, 4 * 3 * sizeof(GLfloat), coordinates, GL_STATIC_DRAW);
+		// Bind to attribute 0
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-			glGenBuffers(1, &ibo);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indexes, GL_STATIC_DRAW);
+		glGenBuffers(1, &ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indexes, GL_STATIC_DRAW);
 
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-			glBindVertexArray(0);
-			int v = glGetError();
-		}
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+		int v = glGetError();
+	}
 
-		LSDTile::LSDTile()
-		{
-			create_vao();
-		}
+	LSDTile::LSDTile()
+	{
 
-		LSDTile::~LSDTile()
-		{
+	}
 
-		}
+	LSDTile::~LSDTile()
+	{
 
-		void LSDTile::render()
-		{
+	}
 
-			static double t = 0;
-			t += 0.01;
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glTranslatef(-0.5, -0.5, 0);
-			glLoadIdentity();
+	void LSDTile::init()
+	{
+		create_vao();
+	}
 
-			glUseProgram(shader->id());
-			glBindVertexArray(vao);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-			float model[16] =
-			{ 1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				0, 0, 0, 1,
-			};
-			GLuint u_proj = glGetUniformLocation(shader->id(), "proj");
-			GLuint u_model = glGetUniformLocation(shader->id(), "model");
-			GLuint u_p1 = glGetUniformLocation(shader->id(), "p1");
-			GLuint u_p2 = glGetUniformLocation(shader->id(), "p2");
-			GLuint u_time = glGetUniformLocation(shader->id(), "time");
+	void LSDTile::dispose()
+	{
+		glDeleteBuffers(1, &vbo);
+		glDeleteBuffers(1, &ibo);
+		glDeleteVertexArrays(1, &vao);
+	}
 
-			float p1[2]{game.pos[0], game.pos[1]};
-			float p2[2]{-game.pos[0],-game.pos[1]};
-			model[3] = -0.5;
-			model[7] = -0.5;
+	void LSDTile::render()
+	{
 
-			glUniformMatrix4fv(u_proj, 1, true, render_unit.projection_matrix);
-			glUniform2fv(u_p1, 1, p1);
-			glUniform2fv(u_p2, 1, p2);
-			glUniform1f(u_time, t);
-			glUniformMatrix4fv(u_model, 1, true, model);
-			int v = glGetError();
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		}
+		static double t = 0;
+		t += 0.01;
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glTranslatef(-0.5, -0.5, 0);
+		glLoadIdentity();
+
+		glUseProgram(shader->id());
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		float model[16] =
+		{ 
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1,
+		};
+		GLuint u_proj = glGetUniformLocation(shader->id(), "proj");
+		GLuint u_model = glGetUniformLocation(shader->id(), "model");
+		GLuint u_p1 = glGetUniformLocation(shader->id(), "p1");
+		GLuint u_p2 = glGetUniformLocation(shader->id(), "p2");
+		GLuint u_time = glGetUniformLocation(shader->id(), "time");
+
+		float p1[2]{ game.pos[0], game.pos[1] };
+		float p2[2]{ -game.pos[0],-game.pos[1] };
+		model[3] = -0.5;
+		model[7] = -0.5;
+
+		glUniformMatrix4fv(u_proj, 1, true, Graphics::render_unit.projection_matrix);
+		glUniform2fv(u_p1, 1, p1);
+		glUniform2fv(u_p2, 1, p2);
+		glUniform1f(u_time, t);
+		glUniformMatrix4fv(u_model, 1, true, model);
+		int v = glGetError();
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 }

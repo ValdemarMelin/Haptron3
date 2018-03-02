@@ -36,7 +36,7 @@ Scene definitions
 namespace Haptron {
 	namespace Graphics {
 		Scene::Scene() {
-
+			init = false;
 		}
 
 		Scene::~Scene() {
@@ -45,6 +45,7 @@ namespace Haptron {
 
 		void Scene::add(SceneComponent * comp, const RenderStage & r)
 		{
+			if (init) comp->init();
 			this->components.insert(comp);
 		}
 
@@ -54,12 +55,25 @@ namespace Haptron {
 		}
 
 		void Scene::render() {
-			for (auto& a : components)
-				a->render();
+			if (!init) {
+				for (auto& a : components)
+				{
+					a->init();
+					a->render();
+				}
+				init = true;
+			}
+			else for (auto& a : components)
+					a->render();
 		}
+
 		void Scene::clear()
 		{
+			if(init)
+				for (auto& a : components)
+					a->dispose();
 			components.clear();
+			init = false;
 		}
 	}
 }

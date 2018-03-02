@@ -3,6 +3,4 @@
 #include "HaptronGame.h"
 #include "Graphics.h"
 #include "HaptronLevel.h"
-
-namespace Haptron {
-}
+#include "Tests.h"

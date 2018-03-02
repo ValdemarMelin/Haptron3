@@ -2,7 +2,6 @@
 
 #include <gl\glew.h>
 
-#include "HaptronGame.h"
 #include "Shader.h"
 #include "Texture.h"
 #include <map>
@@ -42,15 +41,18 @@ namespace Haptron {
 			inline virtual void delete_resource() { delete (T*)(resource); resource = nullptr; }
 		};
 
-		class SceneComponent {
-		protected:
-			inline virtual ~SceneComponent() {};
+		struct SceneComponent {
 		public:
+			inline virtual ~SceneComponent() {};
+			inline SceneComponent() {}
 			virtual void render() = 0;
+			virtual void init() = 0;
+			virtual void dispose() = 0;
 		};
 
 		class Scene {
 			std::set<SceneComponent*> components;
+			bool init;
 		public:
 			enum RenderStage {
 				Primary
@@ -85,6 +87,7 @@ namespace Haptron {
 			void add_graphics_resource(GraphicsResourceBase* gr);
 			void remove_graphics_resource(GraphicsResourceBase* gr);
 		};
+
 		extern GLRenderUnit render_unit;
 	}
 }

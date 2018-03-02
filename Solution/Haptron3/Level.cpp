@@ -8,7 +8,7 @@ namespace Haptron {
 
 	Level::Level()
 	{
-		
+
 	}
 
 	Level::~Level()
@@ -16,13 +16,13 @@ namespace Haptron {
 
 	}
 
-	Level* Level::create_test_level()
-	{
-		return new Level();
-	}
-
 	void Level::tick(double dt)
 	{
 		board.tick(dt);
+	}
+
+	void Level::build_scene()
+	{
+		board.scene_init();
 	}
 }
