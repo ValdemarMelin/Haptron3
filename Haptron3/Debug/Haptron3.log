@@ -1,6 +1,0 @@
-﻿  window.cpp
-  Haptron.cpp
-  Generating Code...
-window.obj : error LNK2005: "struct Game game" (?game@@3UGame@@A) already defined in Haptron.obj
-window.obj : error LNK2019: unresolved external symbol __imp__glewInit@0 referenced in function _wWinMain@16
-D:\Haptron3\Haptron3\Debug\Haptron3.exe : fatal error LNK1120: 1 unresolved externals

@@ -1,5 +1,0 @@
-﻿  LSDTile.cpp
-c:\users\valde\desktop\haptron3\haptron3\lsdtile.cpp(116): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
-glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\valde\Desktop\Haptron3\x64\Debug\vc120.pdb'; linking object as if no debug info
-  Haptron3.vcxproj -> C:\Users\valde\Desktop\Haptron3\x64\Debug\Haptron3.exe
