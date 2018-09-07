@@ -26,14 +26,11 @@ namespace Haptron {
 
 	class Board {
 		BoardGraphics graphics;
-		bool tiles[2][300][300];
-		int tn;
 	public:
 		Board();
 		~Board();
 		void tick(double dt);
 		void scene_init();
-		inline bool tile_at(int x, int y) const { return tiles[tn][x][y]; }
 	};
 
 	class Level : public GameStage {
